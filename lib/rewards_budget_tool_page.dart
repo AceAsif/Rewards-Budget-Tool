@@ -49,36 +49,31 @@ class _RewardsBudgetToolPageState extends State<RewardsBudgetToolPage> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title, style: TextStyle(fontSize: screenWidth * 0.05)),
+        title: Text(
+          widget.title,
+          style: TextStyle(fontSize: screenWidth * 0.05),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenHeight * 0.03),
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.06,
+            vertical: screenHeight * 0.03,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 'Enter Your Budget Settings:',
-                style: TextStyle(fontSize: screenWidth * 0.045, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: screenWidth * 0.045,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               SizedBox(height: screenHeight * 0.02),
-              TextField(
-                controller: _budgetController,
-                decoration: const InputDecoration(labelText: 'Total Budget (\$)'),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: screenHeight * 0.015),
-              TextField(
-                controller: _usersController,
-                decoration: const InputDecoration(labelText: 'Total Users'),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: screenHeight * 0.015),
-              TextField(
-                controller: _rewardController,
-                decoration: const InputDecoration(labelText: 'Reward Per User (\$)'),
-                keyboardType: TextInputType.number,
-              ),
+              _buildNumberField('Total Budget (\$)', _budgetController, screenHeight),
+              _buildNumberField('Total Users', _usersController, screenHeight),
+              _buildNumberField('Reward Per User (\$)', _rewardController, screenHeight),
               SizedBox(height: screenHeight * 0.03),
               Row(
                 children: [
@@ -124,10 +119,21 @@ class _RewardsBudgetToolPageState extends State<RewardsBudgetToolPage> {
                     '⚠️ Warning: Your current plan would exceed your budget.\nPlease reduce rewards, users, or increase your budget.',
                     style: TextStyle(color: Colors.red),
                   ),
-              ]
+              ],
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildNumberField(String label, TextEditingController controller, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: screenHeight * 0.015),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(labelText: label),
+        keyboardType: TextInputType.number,
       ),
     );
   }
