@@ -29,6 +29,39 @@ class _RewardsBudgetToolPageState extends State<RewardsBudgetToolPage> {
     });
   }
 
+  void _reset() {
+    setState(() {
+      _budgetController.text = '1500';
+      _usersController.text = '10';
+      _rewardController.text = '50';
+      _maxRewardPerUser = null;
+      _maxUsersCovered = null;
+      _totalCostIfAllUsersSucceed = null;
+    });
+  }
+
+  Widget _buildResultRow(String label, String value) {
+    return RichText(
+      text: TextSpan(
+        text: '$label ',
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.black87,
+          fontWeight: FontWeight.w600,
+        ),
+        children: [
+          TextSpan(
+            text: value,
+            style: const TextStyle(
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,20 +96,62 @@ class _RewardsBudgetToolPageState extends State<RewardsBudgetToolPage> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _calculate,
-              child: const Text('Calculate'),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _calculate,
+                    child: const Text('Calculate'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _reset,
+                    child: const Text('Reset'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 24),
             if (_maxRewardPerUser != null) ...[
-              Text('Max Reward per User: \$${_maxRewardPerUser!.toStringAsFixed(2)}'),
-              Text('Max Users You Can Reward: $_maxUsersCovered'),
-              Text('Total Cost if All Users Redeem: \$${_totalCostIfAllUsersSucceed!.toStringAsFixed(2)}'),
-              const SizedBox(height: 12),
-              if (_totalCostIfAllUsersSucceed! <= (double.tryParse(_budgetController.text) ?? 0))
-                const Text('✅ Your plan is within the budget.', style: TextStyle(color: Colors.green))
-              else
-                const Text('⚠️ Warning: Budget may be exceeded!', style: TextStyle(color: Colors.red)),
+              Card(
+                margin: const EdgeInsets.symmetric(vertical: 16),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildResultRow(
+                          '💡 Max Affordable Reward per User (within budget):',
+                          '\$${_maxRewardPerUser!.toStringAsFixed(2)}'),
+                      const SizedBox(height: 8),
+                      _buildResultRow(
+                          '🎯 Max Users You Can Fully Reward (within budget):',
+                          '$_maxUsersCovered'),
+                      const SizedBox(height: 8),
+                      _buildResultRow(
+                          '📅 Planned Total Cost (All Users Redeem):',
+                          '\$${_totalCostIfAllUsersSucceed!.toStringAsFixed(2)}'),
+                    ],
+                  ),
+                ),
+              ),
+              Center(
+                child: Text(
+                  _totalCostIfAllUsersSucceed! <= (double.tryParse(_budgetController.text) ?? 0)
+                      ? '✅ Your plan is within the budget.'
+                      : '⚠️ Warning: Your current plan would exceed your budget.\nPlease reduce rewards, users, or increase your budget.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _totalCostIfAllUsersSucceed! <= (double.tryParse(_budgetController.text) ?? 0)
+                        ? Colors.green
+                        : Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ]
           ],
         ),
