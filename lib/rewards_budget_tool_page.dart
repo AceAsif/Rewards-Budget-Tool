@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
 class RewardsBudgetToolPage extends StatefulWidget {
-  const RewardsBudgetToolPage({super.key, required this.title});
   final String title;
+  final ThemeMode currentThemeMode;
+  final ValueChanged<ThemeMode> onThemeChanged;
+
+  const RewardsBudgetToolPage({
+    super.key,
+    required this.title,
+    required this.onThemeChanged,
+    required this.currentThemeMode,
+  });
 
   @override
   State<RewardsBudgetToolPage> createState() => _RewardsBudgetToolPageState();
@@ -53,7 +61,31 @@ class _RewardsBudgetToolPageState extends State<RewardsBudgetToolPage> {
           widget.title,
           style: TextStyle(fontSize: screenWidth * 0.05),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              widget.currentThemeMode == ThemeMode.dark
+                  ? Icons.dark_mode
+                  : widget.currentThemeMode == ThemeMode.light
+                      ? Icons.light_mode
+                      : Icons.brightness_auto,
+            ),
+            tooltip: 'Switch Theme',
+            onPressed: () {
+              ThemeMode newMode;
+              if (widget.currentThemeMode == ThemeMode.system) {
+                newMode = ThemeMode.light;
+              } else if (widget.currentThemeMode == ThemeMode.light) {
+                newMode = ThemeMode.dark;
+              } else {
+                newMode = ThemeMode.system;
+              }
+              widget.onThemeChanged(newMode);
+            },
+          ),
+        ],
       ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(

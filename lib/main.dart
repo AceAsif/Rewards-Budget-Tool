@@ -5,8 +5,21 @@ void main() {
   runApp(const RewardsBudgetToolApp());
 }
 
-class RewardsBudgetToolApp extends StatelessWidget {
+class RewardsBudgetToolApp extends StatefulWidget {
   const RewardsBudgetToolApp({super.key});
+
+  @override
+  State<RewardsBudgetToolApp> createState() => _RewardsBudgetToolAppState();
+}
+
+class _RewardsBudgetToolAppState extends State<RewardsBudgetToolApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void _toggleTheme(ThemeMode newMode) {
+    setState(() {
+      _themeMode = newMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +39,12 @@ class RewardsBudgetToolApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      themeMode: ThemeMode.system, // 👈 Auto-switches based on device setting
-      home: const RewardsBudgetToolPage(title: 'Rewards Budget Tool'),
+      themeMode: _themeMode,
+      home: RewardsBudgetToolPage(
+        title: 'Rewards Budget Tool',
+        onThemeChanged: _toggleTheme, // 👈 Pass toggle function to page
+        currentThemeMode: _themeMode,
+      ),
     );
   }
 }
